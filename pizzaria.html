@@ -1,39 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>SENAI's PIZZERIA</title>
-<link rel="stylesheet" href="pizzaria.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="pizzaria.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<header>
-  <h1>SENAI's PIZZERIA</h1>
-</header>
-<main>
-    <!--Menu-->
-  <div class="btn-container" role="navigation" aria-label="Navegação principal">
-    <button type="button" aria-label="Cardápio" onclick="mostrar('cardápio')">Cardápio</button>
-    <button type="button" aria-label="Fazer pedido" onclick="mostrar('pedido')">Fazer Pedido</button>
-    <button type="button" aria-label="Ver promoções" onclick="mostrar('promos')">Promoções</button>
-    <button type="button" aria-label="Informações de contato" onclick="mostrar('contatos')">Contato</button>
-    <button type="button" aria-label="Sobre a pizzaria" onclick="mostrar('somos')">Sobre Nós</button>
+  <center>
+    <header id="titulo">
+      <p>SENAI's Pizzeria</p>
+    </header>
+  </center>
+  <div id="principal">
+    <h1>BEM VINDO À<br>NOSSA PIZZARIA</h1>
+    <img src="86fce3232697a2cbdc2490d4dafd8b80.jpg"id="fotoprincipal1">
+    <img src="a1ff23bda6f1d442c31cf6efc8b4344c.jpg" id="fotoprincipal2">
+    <button id="entrar" onclick="trocarsecao('login')">Conectar-se</button>
+    <div id="footer">
+      <footer id="rodape">
+        <p>&copy;2025 SENAI's Pizzeria. Todos os direitos reservados</p>
+      </footer>
+    </div>
   </div>
-  <!--Cardápio-->
-  <div id="cardápio" class="hidden">
-    <h2>Cardápio</h2>
-    <ul>
-      <li><strong>Pizza Margherita:</strong> Molho de tomate, queijo mussarella, manjericão fresco.</li>
-      <li><strong>Pizza Pepperoni:</strong> Molho de tomate, queijo mussarella, pepperoni.</li>
-      <li><strong>Pizza Quatro Queijos:</strong> Molho de tomate, queijo mussarella, gorgonzola, parmesão, provolone.</li>
-      <li><strong>Pizza Vegetariana:</strong> Molho de tomate, queijo mussarella, legumes grelhados.</li>
-    </ul>
+
+  <div id="login" class="hidden">
+    <p id="conectar-se">Conectar-se</p>
+    <p id="avisoconecta"></p>
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" placeholder="Digite seu usuário">
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" placeholder="Digite sua senha">
+    <button id="esqueceuasenha" onclick="trocarsecao('esqueciminhaSenha')">Esqueci minha senha</button>
+    <button id="cadastrar" onclick="trocarsecao('cadastro')">Cadastrar-se</button>
+    <button id="logar" onclick="logar()">Conectar-se</button>
   </div>
-</main>
-<footer>
-  &copy; 2025 SENAI's PIZZERIA - Todos os direitos reservados.
-</footer>
+
+  <div id="cadastro" class="hidden">
+    <p id="cadastrar-se">Cadastrar-se</p>
+    <p id="avisocadastra"></p>
+    <label for="numero">Número:</label>
+    <input type="number" id="numero" placeholder="Digite seu número de celular"
+    <label for="endereco">Endereço:</label>
+    <input type="text" id="endereco" placeholder="Digite seu endereço"
+    <label for="usuario">Nome:</label>
+    <input type="text" id="usuario" placeholder="Digite o nome de usuário"
+    <label for="senha">Senha:</label>
+    <input type="password" id="senhac" placeholder="Crie sua senha">
+    <button id="voltar" onclick="trocarsecao('login')">Voltar</button>
+    <button id="fazercadastro" onclick="cadastrar()">Cadastrar-se</button>
+    <button id="voltarpraconecta" onclick="trocarsecao('login')" style="display: none;">Conectar-se</button>
+  </div>
+
+<div id="esqueciminhaSenha" class="hidden">
+  <h2>Esqueci minha senha</h2>
+  <label for="nomeEsqueci">Nome do usuário:</label><br>
+  <input type="text" id="nomeEsqueci" placeholder="Digite seu nome"><br><br>
+  <button onclick="buscarUsuario()">Buscar usuário</button><br><br>
+  <div id="redefinirSenhaDiv" style="display: none;">
+    <label for="novaSenha">Nova senha:</label><br>
+    <input type="password" id="novaSenha" placeholder="Digite a nova senha"><br><br>
+    <button onclick="redefinirSenha()">Redefinir senha</button>
+  </div>
+  <p id="avisoSenha"></p>
+</div>
+<div id="menu" class="hidden">
+
+  <button id="abrircardapio" onclick="trocarsecao('cardapio')">Cardápio</button>
+  <button id="gerenciarpizzas" onclick="trocarsecao('gerenciapizza')">Gerencie suas pizzas</button>
+  <button id="pedir" onclick="trocarsecao('realizarpedido')">Peça já</button>
+</div>
+  <script src="pizzaria.js"></script>
 </body>
 </html>
-</content>
-</create_file>
