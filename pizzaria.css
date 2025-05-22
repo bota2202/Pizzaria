@@ -1,77 +1,154 @@
-#titulo{
-  text-align: center;
-  font-size: 2em;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid rgb(0, 74, 158);
-  background-color: rgb(0, 74, 158);
-  border-radius: 15px;
-  font-family: Blippo, fantasy;
-  color: rgb(255, 255, 255);
-}
-#cadastrar,#esqueceuasenha{
-  border: 0px;
-  color: rgb(0, 119, 255);
-  background-color: rgb(255, 255, 255);
-  text-decoration: underline;
-}
-#cadastrar:hover,#esqueceuasenha:hover{
-  cursor: pointer;
-  color: rgb(108, 174, 254);
-  background-color: rgb(255, 255, 255);
-}
-.hidden{
-  display: none;
-}
-#principal{
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: #333;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background-color: rgb(255, 255, 255);
-  overflow: hidden;
-  flex-direction: column;
-  gap: 120px;
 }
-#principal button{
-  width: 200px;
-  height: 70px;
-  border-radius: 10px;
-  border: 1px solid black;
-  background-color: rgb(0, 74, 158);
-  color: white;
-}
-#principal h1{
-  text-align: center;
-  font-size: 2.5em;
-  justify-content: center;
-  align-items: center;
-  font-family:Comic Sans MS, Comic Sans, cursive;
-}
-#principal img{
-  width: 250px;
-  height: 350px;
-  border-radius: 20px;
-  position: absolute;
-  box-shadow: 5px 5px 7px;
-}
-#fotoprincipal1{
-  top: 145px;
-  left: 30px;
-}
-#fotoprincipal2{
-  top: 145px;
-  right: 30px;
-}
-#rodape{
-  text-align: center;
-}
-#footer{
-  overflow: hidden;
-  position: absolute;
-  bottom: 0px;
-  border: 0px solid black;
-  background-color: white;
+header {
+  background: #ff6f61;
   width: 100%;
-  left: 0px;
+  padding: 1rem;
+  color: white;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  user-select: none;
+}
+main {
+  max-width: 960px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+.hidden { display: none !important; }
+h2 {
+  margin-top: 0;
+  border-bottom: 2px solid #ff6f61;
+  padding-bottom: 0.5rem;
+}
+label {
+  display: block;
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 600;
+}
+input[type="text"], input[type="password"], input[type="url"], input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1.8px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.25s ease;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="url"]:focus, input[type="number"]:focus {
+  border-color: #ff6f61;
+  outline: none;
+}
+button {
+  margin-top: 1rem;
+  background: #ff6f61;
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-shadow: 0 3px 7px rgba(255,111,97,0.5);
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background: #e85a50;
+}
+.msg {
+  margin-top: 1rem;
+  font-weight: 600;
+  min-height: 1.5rem;
+  text-align: center;
+}
+.green { color: #28a745 !important; }
+.red { color: #dc3545 !important; }
+.section-content {
+  margin-top: 1rem;
+}
+.pizza-item, .pizza-item-gerenciar, .pizza-item-pedido {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+.pizza-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.pizza-info {
+  flex-grow: 1;
+}
+.pizza-info h3 {
+  margin: 0 0 0.25rem;
+}
+.pizza-info p {
+  margin: 0.15rem 0;
+  font-size: 0.9rem;
+}
+.item-pedido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.25rem 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.25rem;
+}
+.total-pedido {
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: right;
+  border-top: 2px solid #ff6f61;
+  padding-top: 0.5rem;
+}
+.checkbox-list label {
+  display: block;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+nav button {
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #ff6f61;
+  font-size: 1rem;
+}
+nav button:hover {
+  text-decoration: underline;
+}
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
 }
