@@ -2,7 +2,7 @@
 let usuarios = [
   { nome: "admin", numero: "admin", senhaHash: null, endereco: "admin" }
 ];
-// Gerar hash para senha padrão admin
+
 usuarios[0].senhaHash = hashSenha('admin');
 
 let ingredientes = [
@@ -26,25 +26,24 @@ let ingredientes = [
   { nome: "Ervilha", preco: 3, tipo: "complemento" },
   { nome: "Pimentão", preco: 3, tipo: "verdura" },
 ];
+let vendas=[]
 
 let pizzas = [];
 let carrinho = [];
 let usuarioLogado = null;
 let editandoPizzaIndex = -1;
 
-// Função simples para hashear senha (não é seguro para produção)
 function hashSenha(s) {
   let hash = 0, i, chr;
   if (s.length === 0) return hash;
   for (i = 0; i < s.length; i++) {
     chr = s.charCodeAt(i);
     hash = ((hash << 5) - hash) + chr;
-    hash |= 0; // Converte para 32bits
+    hash |= 0;
   }
   return hash;
 }
 
-// Trocar seções do aplicativo, esconder todas e mostrar só a selecionada
 function trocarsecao(secao) {
   const secoes = [
     "login",
@@ -72,19 +71,17 @@ function trocarsecao(secao) {
   if (secao === "cadastrarpizza") prepararCadastroPizza();
 }
 
-// Mostra mensagem e limpa após 4s
 function mostrarMensagem(id, msg, cor) {
   const el = document.getElementById(id);
   if (!el) return;
   
   el.textContent = msg;
-  el.style.color = cor || '#333';
+  el.className = `msg ${cor === 'red' ? 'erro' : 'sucesso'}`;
   if (msg) {
-    setTimeout(() => { el.textContent = ''; }, 4000);
+    setTimeout(() => { el.textContent = ''; el.className = 'msg'; }, 4000);
   }
 }
 
-// Login
 function logar() {
   let nome = document.getElementById("nome").value.trim();
   let senha = document.getElementById("senha").value.trim();
@@ -112,19 +109,19 @@ function logar() {
 function toggleAdminButtons(show) {
   const btnCadastrar = document.getElementById("btnCadastrarpizza");
   const btnGerenciar = document.getElementById("btnGerenciarpizzas");
-  
   if (btnCadastrar && btnGerenciar) {
     if (show) {
       btnCadastrar.classList.remove("hidden");
       btnGerenciar.classList.remove("hidden");
+      btnRelatorio.classList.remove("hidden");
     } else {
       btnCadastrar.classList.add("hidden");
       btnGerenciar.classList.add("hidden");
+      btnRelatorio.classList.add("hidden");
     }
   }
 }
 
-// Logout
 function logout() {
   usuarioLogado = null;
   carrinho = [];
@@ -133,7 +130,6 @@ function logout() {
   trocarsecao("login");
 }
 
-// Cadastro de usuário
 function cadastrar() {
   let nome = document.getElementById("usuario").value.trim();
   let numero = document.getElementById("numero").value.trim();
@@ -162,7 +158,6 @@ function limparCadastro() {
   document.getElementById("senhac").value = "";
 }
 
-// Esqueci senha
 let usuarioEncontradoIndex = -1;
 
 function buscarUsuario() {
@@ -194,7 +189,6 @@ function redefinirSenha() {
   }
 }
 
-// Atualiza o cardápio com filtro opcional
 function atualizarCardapio(filtro = '') {
   const container = document.getElementById("listaCardapio");
   if (!container) return;
@@ -229,7 +223,6 @@ function atualizarCardapio(filtro = '') {
   });
 }
 
-// Função para filtrar o cardápio conforme texto digitado
 function filtrarCardapio() {
   const input = document.getElementById("pesquisaPizza");
   if (!input) return;
@@ -238,7 +231,6 @@ function filtrarCardapio() {
   atualizarCardapio(valor);
 }
 
-// Atualização da tela para gerenciar pizzas
 function atualizarGerenciar() {
   const container = document.getElementById("listaGerenciar");
   if (!container) return;
@@ -293,7 +285,6 @@ function editarPizza(index) {
   trocarsecao("cadastrarpizza");
 }
 
-// Função para calcular e mostrar preço atual na criação/edição
 function atualizarPrecoAtual() {
   const checkboxes = Array.from(document.querySelectorAll("#ingredientesPizza input[type=checkbox]:checked"));
   const selecionados = checkboxes.map(chk => ingredientes[parseInt(chk.value)]);
@@ -331,48 +322,45 @@ function cadastrarOuAtualizarPizza() {
   let checkboxes = Array.from(document.querySelectorAll("#ingredientesPizza input[type=checkbox]:checked"));
   let selecionados = checkboxes.map(chk => ingredientes[parseInt(chk.value)]);
 
-  // Validações
   if (nome.length < 3) {
-    alert("Nome da pizza deve ter pelo menos 3 caracteres.");
+    mostrarMensagem("avisoCadastroPizza", "Nome da pizza deve ter pelo menos 3 caracteres.", "red");
     return;
   }
   if (!imagem) {
-    alert("Informe o link da imagem da pizza.");
+    mostrarMensagem("avisoCadastroPizza", "Informe o link da imagem da pizza.", "red");
     return;
   }
   if (!/^https?:\/\/.+/.test(imagem)) {
-    alert("Informe uma URL válida para a imagem.");
+    mostrarMensagem("avisoCadastroPizza", "Informe uma URL válida para a imagem.", "red");
     return;
   }
   if (selecionados.length === 0) {
-    alert("Selecione pelo menos um ingrediente.");
+    mostrarMensagem("avisoCadastroPizza", "Selecione pelo menos um ingrediente.", "red");
     return;
   }
-  if (selecionados.length > 7) {
-    alert("Selecione no máximo 7 ingredientes.");
+  if (selecionados.length > 12) {
+    mostrarMensagem("avisoCadastroPizza", "Selecione no máximo 12 ingredientes.", "red");
     return;
   }
 
   let preco = selecionados.reduce((acc, ing) => acc + (ing?.preco || 0), 0);
 
   if (editandoPizzaIndex < 0) {
-    // Cadastrar nova pizza
     pizzas.push({ 
       nome, 
       imagem, 
-      ingredientes: selecionados.filter(i => i), // Filtra valores undefined
+      ingredientes: selecionados.filter(i => i), 
       preco 
     });
-    alert("Pizza cadastrada com sucesso!");
+    mostrarMensagem("avisoCadastroPizza", "Pizza cadastrada com sucesso!", "green");
   } else {
-    // Atualizar pizza existente
     pizzas[editandoPizzaIndex] = { 
       nome, 
       imagem, 
       ingredientes: selecionados.filter(i => i),
       preco 
     };
-    alert("Pizza atualizada com sucesso!");
+    mostrarMensagem("avisoCadastroPizza", "Pizza atualizada com sucesso!", "green");
     editandoPizzaIndex = -1;
     document.getElementById("btnSalvarPizza").textContent = "Salvar Pizza";
     document.getElementById("tituloCadastroPizza").textContent = "Cadastrar Pizza";
@@ -420,7 +408,7 @@ function adicionarPedido(index) {
   } else {
     carrinho.push({ pizza, quantidade: 1 });
   }
-  alert(`Pizza "${pizza.nome}" adicionada ao pedido.`);
+  mostrarMensagem("avisoPedido", `Pizza "${pizza.nome}" adicionada ao pedido.`, "green");
   atualizarResumoPedido();
 }
 
@@ -461,11 +449,10 @@ function removerPedido(index) {
 
 function finalizarPedido() {
   if (carrinho.length === 0) {
-    alert("Seu pedido está vazio!");
+    mostrarMensagem("avisoPedido", "Seu pedido está vazio!", "red");
     return;
   }
   
-  // Mostrar resumo do pedido
   let mensagem = "Resumo do Pedido:\n";
   let total = 0;
   
@@ -479,12 +466,36 @@ function finalizarPedido() {
   mensagem += `Endereço de entrega: ${usuarioLogado?.endereco || 'Não informado'}`;
   
   if (confirm(`${mensagem}\n\nConfirmar pedido?`)) {
-    alert("Pedido finalizado! Obrigado pela compra.");
+    mostrarMensagem("avisoPedido", "Pedido finalizado! Obrigado pela compra.", "green");
+    registrarVenda(carrinho); // Registra a venda
     carrinho = [];
     atualizarResumoPedido();
     trocarsecao("menu");
   }
 }
 
-// Inicialização padrão
+function mostrarRelatorioVendas() {
+  const container = document.getElementById("listaVendas");
+  if (!container) return;
+  container.innerHTML = ""; // Limpa o conteúdo anterior
+  if (vendas.length === 0) {
+    container.innerHTML = "<p>Nenhuma venda registrada.</p>";
+    return;
+  }
+  vendas.forEach((venda, index) => {
+    const div = document.createElement("div");
+    div.className = "venda-item";
+    div.innerHTML = `
+      <h3>Venda #${index + 1} - ${venda.data}</h3>
+      <p><strong>Total:</strong> R$ ${venda.total.toFixed(2)}</p>
+      <p><strong>Itens:</strong></p>
+      <ul>
+        ${venda.itens.map(item => `<li>${item.pizza.nome} - Quantidade: ${item.quantidade}</li>`).join('')}
+      </ul>
+    `;
+    container.appendChild(div);
+  });
+}
+
+
 trocarsecao("login");
