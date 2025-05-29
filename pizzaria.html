@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pizzaria Online - Gerenciamento</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="pizzaria.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pizzaria Online - Gerenciamento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="pizzaria.css" />
 </head>
 <body>
 
 <header>
-  Pizzaria Online - Gestão de Usuários e Pizzas
+  <img src="logopizza.png" alt="Logo da Pizzaria">
 </header>
 
 <main>
@@ -38,9 +38,9 @@
     <label for="usuario">Nome</label>
     <input type="text" id="usuario" autocomplete="username" />
     <label for="numero">Número</label>
-    <input type="text" id="numero" />
+    <input type="tel" id="numero" pattern="[0-9]{10,11}" title="Digite um número válido (DDD + número)" />
     <label for="endereco">Endereço</label>
-    <input type="text" id="endereco" />
+    <input type="text" id="endereco" placeholder="Rua, número, bairro..." />
     <label for="senhac">Senha</label>
     <input type="password" id="senhac" autocomplete="new-password" />
     <button onclick="cadastrar()">Cadastrar</button>
@@ -75,6 +75,7 @@
       <button onclick="trocarsecao('realizarpedido')">Fazer Pedido</button>
       <button id="btnCadastrarpizza" class="hidden" onclick="trocarsecao('cadastrarpizza')">Cadastrar Pizza</button>
       <button id="btnGerenciarpizzas" class="hidden" onclick="trocarsecao('gerenciapizza')">Gerenciar Pizzas</button>
+      <button id="btnRelatorioVendas" class="hidden" onclick="trocarsecao('relatorioVendas')">Relatório de Vendas</button>
       <button onclick="logout()">Sair</button>
     </nav>
   </section>
@@ -101,6 +102,7 @@
     <div id="listaPedido" class="section-content"></div>
     <h3>Resumo do Pedido</h3>
     <div id="resumoPedido" class="section-content"></div>
+    <div id="avisoPedido" class="msg"></div>
     <button onclick="finalizarPedido()">Finalizar Pedido</button>
   </section>
 
@@ -112,7 +114,7 @@
     <input type="text" id="nomePizza" />
 
     <label for="imagemPizza">Imagem (URL)</label>
-    <input type="url" id="imagemPizza" />
+    <input type="url" id="imagemPizza" placeholder="https://exemplo.com/imagem.jpg" />
 
     <fieldset class="checkbox-list" id="ingredientesPizza" style="margin-top: 1rem; border: 1px solid #ddd; padding: 1rem; border-radius: 8px;">
       <legend>Escolha os ingredientes (máx 7)</legend>
@@ -120,6 +122,7 @@
 
     <p style="font-weight:700; margin-top:0.8rem;">Preço Atual: R$ <span id="precoAtualPizza">0.00</span></p>
 
+    <div id="avisoCadastroPizza" class="msg"></div>
     <button id="btnSalvarPizza" onclick="cadastrarOuAtualizarPizza()">Salvar Pizza</button>
   </section>
 </main>
@@ -132,4 +135,3 @@
 
 </body>
 </html>
-
