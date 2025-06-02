@@ -125,6 +125,29 @@
     <div id="avisoCadastroPizza" class="msg"></div>
     <button id="btnSalvarPizza" onclick="cadastrarOuAtualizarPizza()">Salvar Pizza</button>
   </section>
+
+  <!--Relatório de Vendas -->
+  <section id="relatorioVendas" class="hidden">
+    <h2>Relatório de Vendas</h2>
+    <button onclick="trocarsecao('menu')">Voltar ao Menu</button>
+
+    <div class="totais-relatorio">
+      <div class="total-item">
+        <h4>Total de Vendas</h4>
+        <div class="valor" id="totalVendas">R$ 0,00</div>
+      </div>
+      <div class="total-item">
+        <h4>Quantidade de Pedidos</h4>
+        <div class="valor" id="qtdPedidos">0</div>
+      </div>
+      <div class="total-item">
+        <h4>Ticket Médio</h4>
+        <div class="valor" id="ticketMedio">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div id="listaVendas" class="section-content"></div>
+  </section>
 </main>
 
 <footer>
