@@ -55,6 +55,7 @@ function trocarsecao(secao) {
     "gerenciapizza",
     "realizarpedido",
     "cadastrarpizza",
+    "relatorioVendas"
   ];
 
   secoes.forEach(id => {
@@ -69,6 +70,7 @@ function trocarsecao(secao) {
   if (secao === "gerenciapizza") atualizarGerenciar();
   if (secao === "realizarpedido") atualizarPedido();
   if (secao === "cadastrarpizza") prepararCadastroPizza();
+  if (secao === "relatorioVendas") mostrarRelatorioVendas();
 }
 
 function mostrarMensagem(id, msg, cor) {
@@ -109,7 +111,8 @@ function logar() {
 function toggleAdminButtons(show) {
   const btnCadastrar = document.getElementById("btnCadastrarpizza");
   const btnGerenciar = document.getElementById("btnGerenciarpizzas");
-  if (btnCadastrar && btnGerenciar) {
+  const btnRelatorio = document.getElementById("btnRelatorioVendas");
+  if (btnCadastrar && btnGerenciar && btnRelatorio) {
     if (show) {
       btnCadastrar.classList.remove("hidden");
       btnGerenciar.classList.remove("hidden");
@@ -453,49 +456,138 @@ function finalizarPedido() {
     return;
   }
   
-  let mensagem = "Resumo do Pedido:\n";
-  let total = 0;
+  let total = carrinho.reduce((acc, item) => acc + (item.pizza.preco * item.quantidade), 0);
   
-  carrinho.forEach(item => {
-    const subtotal = item.pizza.preco * item.quantidade;
-    mensagem += `- ${item.pizza.nome} x${item.quantidade}: R$ ${subtotal.toFixed(2)}\n`;
-    total += subtotal;
-  });
+  // Criar e mostrar modal de confirmação
+  const modalConfirmacao = document.createElement('div');
+  modalConfirmacao.className = 'modal-confirmacao';
+  modalConfirmacao.innerHTML = `
+    <div class="modal-content">
+      <h3>Confirmar Pedido</h3>
+      <div class="resumo-modal">
+        <h4>Resumo do Pedido:</h4>
+        ${carrinho.map(item => `
+          <div class="item-resumo">
+            <span>${item.pizza.nome} x${item.quantidade}</span>
+            <span>R$ ${(item.pizza.preco * item.quantidade).toFixed(2)}</span>
+          </div>
+        `).join('')}
+        <div class="total-modal">
+          <strong>Total:</strong>
+          <strong>R$ ${total.toFixed(2)}</strong>
+        </div>
+        <div class="endereco-entrega">
+          <strong>Endereço de entrega:</strong>
+          <p>${usuarioLogado?.endereco || 'Não informado'}</p>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-cancelar" onclick="fecharModal(this.parentElement.parentElement.parentElement)">Cancelar</button>
+        <button class="btn-confirmar" onclick="confirmarPedido(this.parentElement.parentElement.parentElement)">Confirmar Pedido</button>
+      </div>
+    </div>
+  `;
   
-  mensagem += `\nTotal: R$ ${total.toFixed(2)}\n\n`;
-  mensagem += `Endereço de entrega: ${usuarioLogado?.endereco || 'Não informado'}`;
-  
-  if (confirm(`${mensagem}\n\nConfirmar pedido?`)) {
-    mostrarMensagem("avisoPedido", "Pedido finalizado! Obrigado pela compra.", "green");
-    registrarVenda(carrinho); // Registra a venda
-    carrinho = [];
-    atualizarResumoPedido();
-    trocarsecao("menu");
+  document.body.appendChild(modalConfirmacao);
+}
+
+function fecharModal(modal) {
+  if (modal) {
+    modal.remove();
   }
 }
 
-function mostrarRelatorioVendas() {
+function confirmarPedido(modal) {
+  mostrarMensagem("avisoPedido", "Pedido finalizado! Obrigado pela compra.", "green");
+  registrarVenda(carrinho);
+  carrinho = [];
+  atualizarResumoPedido();
+  fecharModal(modal);
+  trocarsecao("menu");
+}
+
+function filtrarVendas() {
+  const dataInicio = document.getElementById('dataInicio').value;
+  const dataFim = document.getElementById('dataFim').value;
+  
+  let vendasFiltradas = [...vendas];
+  
+  if (dataInicio && dataFim) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+    fim.setHours(23, 59, 59); // Inclui todo o último dia
+    
+    vendasFiltradas = vendas.filter(venda => {
+      const dataVenda = new Date(venda.data);
+      return dataVenda >= inicio && dataVenda <= fim;
+    });
+  }
+  
+  mostrarRelatorioVendas(vendasFiltradas);
+}
+
+function mostrarRelatorioVendas(vendasParaMostrar = vendas) {
   const container = document.getElementById("listaVendas");
   if (!container) return;
-  container.innerHTML = ""; // Limpa o conteúdo anterior
-  if (vendas.length === 0) {
-    container.innerHTML = "<p>Nenhuma venda registrada.</p>";
+  
+  container.innerHTML = "";
+  
+  if (vendasParaMostrar.length === 0) {
+    container.innerHTML = "<p class='sem-vendas'>Nenhuma venda registrada no período.</p>";
+    atualizarTotalizadores(0, 0, 0);
     return;
   }
-  vendas.forEach((venda, index) => {
+  
+  // Calcula totalizadores
+  const totalVendas = vendasParaMostrar.reduce((acc, venda) => acc + venda.total, 0);
+  const qtdPedidos = vendasParaMostrar.length;
+  const ticketMedio = totalVendas / qtdPedidos;
+  
+  // Atualiza os totalizadores
+  atualizarTotalizadores(totalVendas, qtdPedidos, ticketMedio);
+  
+  // Mostra as vendas
+  vendasParaMostrar.forEach((venda, index) => {
     const div = document.createElement("div");
     div.className = "venda-item";
     div.innerHTML = `
-      <h3>Venda #${index + 1} - ${venda.data}</h3>
+      <h3 class="titulo-venda">
+        Pedido #${index + 1}
+        <span class="data-venda">${venda.data}</span>
+      </h3>
+      <p><strong>Cliente:</strong> ${venda.usuario}</p>
       <p><strong>Total:</strong> R$ ${venda.total.toFixed(2)}</p>
-      <p><strong>Itens:</strong></p>
-      <ul>
-        ${venda.itens.map(item => `<li>${item.pizza.nome} - Quantidade: ${item.quantidade}</li>`).join('')}
-      </ul>
+      <div class="detalhes-pedido">
+        <h4>Itens do Pedido:</h4>
+        <ul>
+          ${venda.itens.map(item => `
+            <li>
+              <span>${item.pizza.nome}</span>
+              <span>Qtd: ${item.quantidade} - R$ ${(item.pizza.preco * item.quantidade).toFixed(2)}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
     `;
     container.appendChild(div);
   });
 }
 
+function atualizarTotalizadores(total, quantidade, ticket) {
+  document.getElementById('totalVendas').textContent = `R$ ${total.toFixed(2)}`;
+  document.getElementById('qtdPedidos').textContent = quantidade;
+  document.getElementById('ticketMedio').textContent = `R$ ${ticket.toFixed(2)}`;
+}
+
+function registrarVenda(itensCarrinho) {
+  const total = itensCarrinho.reduce((acc, item) => acc + (item.pizza.preco * item.quantidade), 0);
+  const venda = {
+    data: new Date().toLocaleString(),
+    itens: JSON.parse(JSON.stringify(itensCarrinho)), // Cria uma cópia profunda dos itens
+    total: total,
+    usuario: usuarioLogado ? usuarioLogado.nome : 'Anônimo'
+  };
+  vendas.push(venda);
+}
 
 trocarsecao("login");
